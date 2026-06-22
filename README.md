@@ -37,6 +37,27 @@ Each tool's `register()` / widget / download block is pasted into the relevant W
 
 Portal `6034125`, one shared form `71b010ce-dc05-47ce-88c4-130674855dae`, differentiated by the hidden `outil_source` field. The `hubspotutk` cookie is intentionally not sent (GDPR/CNIL). No PII is ever pushed to `dataLayer`.
 
+## Game widgets (hosted, tiny embed)
+
+The Dictée and Memory games are packaged as self-mounting scripts (built from `dictee_widget.html` / `memory-widget.html`). Each one injects the game into a mount `<div>` and runs in the page, so it reaches the site-wide `CDLTools` for lead capture (no iframe).
+
+In the game's Webflow CMS "Custom Code" box, paste only these two lines:
+
+```html
+<!-- Dictée -->
+<div id="cdl-dictee"></div>
+<script src="https://cdn.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@v1.1.0/dictee.js" defer></script>
+```
+```html
+<!-- Memory -->
+<div id="cdl-memory"></div>
+<script src="https://cdn.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@v1.1.0/memory.js" defer></script>
+```
+
+Word Catcher stays as it is (external game on `argenty-cdl.github.io` + the small `CDLTools.register` snippet). All three depend on the site-wide Head scripts being loaded.
+
+To rebuild a game widget after editing its source: re-run the packaging (base64 the `<style>`+markup, append the game `<script>` body into the self-mounting wrapper), then bump the tag.
+
 ## Updating a module (versioned, cache-safe)
 
 Edit the file, then cut a new tag and bump the version in the Webflow `<script>` URLs:
