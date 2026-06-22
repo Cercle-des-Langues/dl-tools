@@ -52,6 +52,25 @@
   var DEFAULT_DISMISS  = "Non merci";
   var DEFAULT_SUCCESS_BTN = "Continuer";
 
+  // Phone country dial codes (France default). value = dial code; the full
+  // number sent to HubSpot is "<dial> <number>" so sales can call directly.
+  var COUNTRIES = [
+    { n: "France", d: "+33" }, { n: "Belgique", d: "+32" }, { n: "Suisse", d: "+41" },
+    { n: "Luxembourg", d: "+352" }, { n: "Canada", d: "+1" }, { n: "Royaume-Uni", d: "+44" },
+    { n: "Allemagne", d: "+49" }, { n: "Espagne", d: "+34" }, { n: "Italie", d: "+39" },
+    { n: "Portugal", d: "+351" }, { n: "Pays-Bas", d: "+31" }, { n: "Irlande", d: "+353" },
+    { n: "États-Unis", d: "+1" }, { n: "Maroc", d: "+212" }, { n: "Algérie", d: "+213" },
+    { n: "Tunisie", d: "+216" }, { n: "Sénégal", d: "+221" }, { n: "Côte d'Ivoire", d: "+225" },
+    { n: "Cameroun", d: "+237" }, { n: "Mali", d: "+223" }, { n: "Guinée", d: "+224" },
+    { n: "Burkina Faso", d: "+226" }, { n: "Bénin", d: "+229" }, { n: "Togo", d: "+228" },
+    { n: "Gabon", d: "+241" }, { n: "Congo", d: "+242" }, { n: "RD Congo", d: "+243" },
+    { n: "Madagascar", d: "+261" }, { n: "Maurice", d: "+230" }, { n: "Liban", d: "+961" },
+    { n: "Autriche", d: "+43" }, { n: "Pologne", d: "+48" }, { n: "Roumanie", d: "+40" },
+    { n: "Grèce", d: "+30" }, { n: "Suède", d: "+46" }, { n: "Danemark", d: "+45" },
+    { n: "Norvège", d: "+47" }, { n: "Finlande", d: "+358" }, { n: "Turquie", d: "+90" },
+    { n: "Australie", d: "+61" }
+  ];
+
   /* ---------------------------------------------------------------
    * State
    * ------------------------------------------------------------- */
@@ -142,6 +161,11 @@
       ".cdl-modal__legal a{color:inherit}",
       ".cdl-modal__dismiss{margin-top:14px;background:none;border:none;cursor:pointer;color:" + TOKENS.text + ";opacity:.6;font-family:inherit;font-size:.85rem;text-decoration:underline}",
       ".cdl-modal__dismiss:hover{opacity:.9}",
+      ".cdl-modal__phone{display:flex;gap:8px;margin:0 0 12px}",
+      ".cdl-modal__phone .cdl-modal__input{margin:0}",
+      ".cdl-modal__phone .cdl-modal__phonenum{flex:1;min-width:0}",
+      ".cdl-modal__dial{flex:0 0 auto;width:44%;box-sizing:border-box;padding:13px 10px;border:1.5px solid " + TOKENS.fieldBorder + ";border-radius:" + TOKENS.radiusField + ";font-family:inherit;font-size:.92rem;color:" + TOKENS.text + ";background:" + TOKENS.white + ";cursor:pointer}",
+      ".cdl-modal__dial:focus{outline:none;border-color:" + TOKENS.green + "}",
       ".cdl-modal [hidden]{display:none!important}"
     ].join("");
     var s = document.createElement("style");
@@ -174,7 +198,10 @@
             '<form id="cdl-modal-form" novalidate>' +
               '<input type="text"  id="cdl-modal-firstname" class="cdl-modal__input" placeholder="Prénom" autocomplete="given-name" required />' +
               '<input type="text"  id="cdl-modal-lastname"  class="cdl-modal__input" placeholder="Nom" autocomplete="family-name" required />' +
-              '<input type="tel"   id="cdl-modal-phone"     class="cdl-modal__input" placeholder="Numéro de téléphone" autocomplete="tel" required />' +
+              '<div class="cdl-modal__phone">' +
+                '<select id="cdl-modal-dial" class="cdl-modal__dial" aria-label="Indicatif pays"></select>' +
+                '<input type="tel" id="cdl-modal-phone" class="cdl-modal__input cdl-modal__phonenum" placeholder="Numéro de téléphone" autocomplete="tel" required />' +
+              '</div>' +
               '<input type="email" id="cdl-modal-email"     class="cdl-modal__input" placeholder="Adresse email" autocomplete="email" required />' +
               '<p id="cdl-modal-error" class="cdl-modal__error" hidden></p>' +
               '<button type="submit" id="cdl-modal-submit" class="cdl-modal__btn"></button>' +
@@ -206,6 +233,13 @@
     el.formView    = document.getElementById("cdl-modal-form-view");
     el.successView = document.getElementById("cdl-modal-success-view");
     el.successBtn  = document.getElementById("cdl-modal-success-btn");
+    el.dial        = document.getElementById("cdl-modal-dial");
+    if (el.dial) {
+      el.dial.innerHTML = COUNTRIES.map(function (c) {
+        return '<option value="' + c.d + '">' + c.n + ' (' + c.d + ')</option>';
+      }).join("");
+      el.dial.value = "+33"; // default France
+    }
 
     el.form.addEventListener("submit", onSubmit);
     el.modal.addEventListener("click", function (e) {
@@ -277,8 +311,10 @@
     var lastname  = el.lastname.value.trim();
     var phone     = el.phone.value.trim();
     var email     = el.email.value.trim();
+    var dial      = el.dial ? el.dial.value : "";
+    var phoneFull = (dial ? dial + " " : "") + phone;  // e.g. "+33 06 12 34 56 78"
 
-    if (!firstname || !lastname || !phone || !isValidEmail(email)) {
+    if (!firstname || !lastname || phone.replace(/[^\d]/g, "").length < 6 || !isValidEmail(email)) {
       el.error.textContent = "Merci de remplir tous les champs.";
       el.error.hidden = false;
       return;
@@ -288,7 +324,7 @@
     el.submit.disabled = true;
     el.submit.textContent = "Envoi...";
 
-    submitToHubSpot(cfg, buildFields(cfg, firstname, lastname, phone, email))
+    submitToHubSpot(cfg, buildFields(cfg, firstname, lastname, phoneFull, email))
       .then(function () {
         submitted = true;
         el.formView.hidden = true;
