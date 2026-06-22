@@ -2,9 +2,12 @@
 
 Shared, dependency-free JavaScript modules for CDL's interactive tools (games + blog lead magnets). They are hosted on **GitHub Pages** and loaded **site-wide** in Webflow, so a new tool is configuration, not new code.
 
-## Hosted files (GitHub Pages)
+## Hosted files (jsDelivr CDN)
 
-Base URL: `https://cercle-des-langues.github.io/dl-tools/`
+Served straight from this public repo by jsDelivr - a global CDN with proper cache control. No GitHub Pages build required.
+
+Base URL (pinned, recommended): `https://cdn.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@v1.0.0/`
+Floating (latest `main`, cached ~7 days): `https://cdn.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@main/`
 
 | File | Role |
 |---|---|
@@ -18,10 +21,10 @@ Base URL: `https://cercle-des-langues.github.io/dl-tools/`
 Order matters; `defer` preserves it.
 
 ```html
-<script src="https://cercle-des-langues.github.io/dl-tools/cdl-analytics.js" defer></script>
-<script src="https://cercle-des-langues.github.io/dl-tools/cdl-tools.js" defer></script>
-<script src="https://cercle-des-langues.github.io/dl-tools/word-catcher-streak.js" defer></script>
-<script src="https://cercle-des-langues.github.io/dl-tools/cdl-pdf.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@v1.0.0/cdl-analytics.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@v1.0.0/cdl-tools.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@v1.0.0/word-catcher-streak.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@v1.0.0/cdl-pdf.js" defer></script>
 ```
 
 `cdl-tools.js` must load before `word-catcher-streak.js` (the streak layer calls `CDLTools`). The others are order-independent, but the block above is the safe canonical order.
@@ -34,14 +37,17 @@ Each tool's `register()` / widget / download block is pasted into the relevant W
 
 Portal `6034125`, one shared form `71b010ce-dc05-47ce-88c4-130674855dae`, differentiated by the hidden `outil_source` field. The `hubspotutk` cookie is intentionally not sent (GDPR/CNIL). No PII is ever pushed to `dataLayer`.
 
-## Updating a module
+## Updating a module (versioned, cache-safe)
 
-Edit the file, then:
+Edit the file, then cut a new tag and bump the version in the Webflow `<script>` URLs:
 
 ```bash
 git add .
 git commit -m "update: <what changed>"
-git push origin main
+git tag v1.0.1
+git push origin main v1.0.1
 ```
 
-GitHub Pages redeploys in ~1-2 minutes. GitHub Pages caches, so a hard refresh (or a cache-busting `?v=2` query on the script URL) helps confirm a new version is live.
+Then change `@v1.0.0` to `@v1.0.1` in the Webflow Head block. A tag is immutable, so the new version is live globally within ~1 minute with no stale cache.
+
+If you use the floating `@main` URLs instead, jsDelivr caches them ~7 days; force a refresh by opening the purge URL, e.g. `https://purge.jsdelivr.net/gh/Cercle-des-Langues/dl-tools@main/cdl-tools.js`.
