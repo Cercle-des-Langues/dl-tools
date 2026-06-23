@@ -203,7 +203,7 @@
             '<span id="cdl-modal-badge" class="cdl-modal__badge" hidden></span>' +
             '<h2 id="cdl-modal-title" class="cdl-modal__title"></h2>' +
             '<p id="cdl-modal-text" class="cdl-modal__text"></p>' +
-            '<form id="cdl-modal-form" novalidate>' +
+            '<div id="cdl-modal-form">' +
               '<input type="text"  id="cdl-modal-firstname" class="cdl-modal__input" placeholder="Prénom" autocomplete="given-name" required />' +
               '<input type="text"  id="cdl-modal-lastname"  class="cdl-modal__input" placeholder="Nom" autocomplete="family-name" required />' +
               '<div class="cdl-modal__phone">' +
@@ -212,8 +212,8 @@
               '</div>' +
               '<input type="email" id="cdl-modal-email"     class="cdl-modal__input" placeholder="Adresse email" autocomplete="email" required />' +
               '<p id="cdl-modal-error" class="cdl-modal__error" hidden></p>' +
-              '<button type="submit" id="cdl-modal-submit" class="cdl-modal__btn"></button>' +
-            '</form>' +
+              '<button type="button" id="cdl-modal-submit" class="cdl-modal__btn"></button>' +
+            '</div>' +
             '<p class="cdl-modal__legal">En validant, vous acceptez d\'être recontacté(e). Voir notre <a href="/cgu/politique-de-confidentialite" target="_blank" rel="noopener">politique de confidentialité</a>.</p>' +
             '<button type="button" id="cdl-modal-dismiss" class="cdl-modal__dismiss" data-cdl-dismiss></button>' +
           '</div>' +
@@ -249,9 +249,19 @@
       el.dial.value = "+33"; // default France
     }
 
-    el.form.addEventListener("submit", onSubmit);
-    // Track the chosen dial code on `document` (event delegation) so it cannot be lost
-    // when Webflow's "forms re-init" clones/replaces the modal <form> node mid-session.
+    // The modal is a <div>, NOT a <form>, so the site-wide Webflow->HubSpot form
+    // integration cannot grab it and re-submit the raw phone (which was overwriting our
+    // "+33 " number). We drive submit ourselves: the button click + Enter in any field.
+    el.submit.addEventListener("click", onSubmit);
+    [el.firstname, el.lastname, el.phone, el.email].forEach(function (inp) {
+      if (inp) inp.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") { ev.preventDefault(); onSubmit(ev); }
+      });
+    });
+    // Track the chosen dial code on `document` (event delegation) so it cannot be lost.
+    document.addEventListener("change", function (e) {
+      if (e.target && e.target.id === "cdl-modal-dial") selectedDial = e.target.value || "+33";
+    });
     document.addEventListener("change", function (e) {
       if (e.target && e.target.id === "cdl-modal-dial") selectedDial = e.target.value || "+33";
     });
@@ -315,7 +325,7 @@
   }
 
   function onSubmit(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (submitted) return;
     var cfg = current && current.config;
     if (!cfg) return;
