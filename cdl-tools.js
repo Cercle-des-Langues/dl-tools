@@ -19,7 +19,12 @@
 (function () {
   "use strict";
 
-  if (window.CDLTools && window.CDLTools.__ready) return; // singleton guard
+  try { console.log("[CDL] cdl-tools v1.1.5 file executing @ " + location.pathname); } catch (e) {}
+  if (window.CDLTools && window.CDLTools.__ready) {
+    try { console.warn("[CDL] v1.1.5 NO-OP at singleton guard - another CDLTools already owns this page (its version: " + (window.CDLTools.__version || "older-than-1.1.5") + "). THAT copy handles the form, so the dial may be dropped."); } catch (e) {}
+    return; // singleton guard
+  }
+  try { console.log("[CDL] v1.1.5 INSTALLED - this copy owns the modal + submit"); } catch (e) {}
 
   /* ---------------------------------------------------------------
    * Design tokens (from the brand charter)
@@ -325,8 +330,9 @@
     var phone     = fieldVal("cdl-modal-phone")     || (el.phone ? el.phone.value.trim() : "");
     var email     = fieldVal("cdl-modal-email")     || (el.email ? el.email.value.trim() : "");
     var liveDial  = document.getElementById("cdl-modal-dial");
-    var dial      = (liveDial && liveDial.value) ? liveDial.value : selectedDial;
-    var phoneFull = (dial ? dial + " " : "") + phone;  // e.g. "+33 6 12 34 56 78"
+    var dial      = (liveDial && liveDial.value) || selectedDial || "+33";  // triple-safe: never empty
+    var phoneFull = dial + " " + phone;                                      // always "<dial> <number>"
+    try { console.log('[CDL v1.1.5] SUBMIT  liveDial=' + (liveDial ? ('"' + liveDial.value + '"') : 'null') + '  selectedDial="' + selectedDial + '"  ->  phoneFull="' + phoneFull + '"'); } catch (e) {}
 
     if (!firstname || !lastname || phone.replace(/[^\d]/g, "").length < 6 || !isValidEmail(email)) {
       el.error.textContent = "Merci de remplir tous les champs.";
@@ -569,6 +575,7 @@
 
   window.CDLTools = {
     __ready: true,
+    __version: "1.1.5",
     register: register,
     openModal: openModal,
     closeModal: closeModal,
