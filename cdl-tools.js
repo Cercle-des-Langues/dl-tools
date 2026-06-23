@@ -78,6 +78,8 @@
   var submitted = false;        // global: once a contact is captured, do not nag again
   var interceptorInstalled = false;
   var current = null;           // { config, trigger, segment, score, level }
+  var selectedDial = "+33";     // chosen phone dial code, tracked via document-level change
+                                // delegation so it survives Webflow's "forms re-init"
 
   // DOM refs (populated after injection)
   var el = {};
@@ -243,6 +245,11 @@
     }
 
     el.form.addEventListener("submit", onSubmit);
+    // Track the chosen dial code on `document` (event delegation) so it cannot be lost
+    // when Webflow's "forms re-init" clones/replaces the modal <form> node mid-session.
+    document.addEventListener("change", function (e) {
+      if (e.target && e.target.id === "cdl-modal-dial") selectedDial = e.target.value || "+33";
+    });
     el.modal.addEventListener("click", function (e) {
       if (e.target.hasAttribute("data-cdl-dismiss")) closeModal();
     });
@@ -308,12 +315,18 @@
     var cfg = current && current.config;
     if (!cfg) return;
 
-    var firstname = el.firstname.value.trim();
-    var lastname  = el.lastname.value.trim();
-    var phone     = el.phone.value.trim();
-    var email     = el.email.value.trim();
-    var dial      = el.dial ? el.dial.value : "";
-    var phoneFull = (dial ? dial + " " : "") + phone;  // e.g. "+33 06 12 34 56 78"
+    // Re-query LIVE field nodes at submit time. Webflow's repeated "forms re-init" can
+    // swap the modal's form nodes after gameplay, leaving the cached el.* refs stale
+    // (observed: the dial value vanished post-game). getElementById hits the live node
+    // the user actually filled; the dial also falls back to the delegation-tracked value.
+    function fieldVal(id) { var n = document.getElementById(id); return n ? (n.value || "").trim() : ""; }
+    var firstname = fieldVal("cdl-modal-firstname") || (el.firstname ? el.firstname.value.trim() : "");
+    var lastname  = fieldVal("cdl-modal-lastname")  || (el.lastname ? el.lastname.value.trim() : "");
+    var phone     = fieldVal("cdl-modal-phone")     || (el.phone ? el.phone.value.trim() : "");
+    var email     = fieldVal("cdl-modal-email")     || (el.email ? el.email.value.trim() : "");
+    var liveDial  = document.getElementById("cdl-modal-dial");
+    var dial      = (liveDial && liveDial.value) ? liveDial.value : selectedDial;
+    var phoneFull = (dial ? dial + " " : "") + phone;  // e.g. "+33 6 12 34 56 78"
 
     if (!firstname || !lastname || phone.replace(/[^\d]/g, "").length < 6 || !isValidEmail(email)) {
       el.error.textContent = "Merci de remplir tous les champs.";
@@ -455,6 +468,11 @@
     el.successView.hidden = true;
     el.error.hidden = true;
     [el.firstname, el.lastname, el.phone, el.email].forEach(function (i) { i.value = ""; });
+    // Reset the dial to France each open, re-querying the LIVE node (Webflow may have
+    // swapped the cached one) so the shown value and the tracked value stay in sync.
+    selectedDial = "+33";
+    var dialNow = document.getElementById("cdl-modal-dial");
+    if (dialNow) dialNow.value = "+33";
 
     el.modal.classList.add("is-open");
     el.modal.setAttribute("aria-hidden", "false");
@@ -471,6 +489,11 @@
 
   function closeModal() {
     if (!el.modal) return;
+    // Move focus out of the modal BEFORE hiding it, or the browser warns about
+    // aria-hidden on an ancestor of the focused element (accessibility).
+    if (el.modal.contains(document.activeElement) && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
     el.modal.classList.remove("is-open");
     el.modal.setAttribute("aria-hidden", "true");
     var cfg = current && current.config;
