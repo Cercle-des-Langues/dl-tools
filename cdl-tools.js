@@ -143,10 +143,10 @@
   function injectStyles() {
     if (document.getElementById("cdl-tools-style")) return;
     var css = [
-      ".cdl-modal{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:'Montserrat',sans-serif}",
+      ".cdl-modal{position:fixed;top:0;right:0;bottom:0;left:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:'Montserrat',sans-serif}",
       ".cdl-modal.is-open{display:flex}",
-      ".cdl-modal__overlay{position:absolute;inset:0;background:rgba(38,50,56,.55);backdrop-filter:blur(2px)}",
-      ".cdl-modal__card{position:relative;z-index:1;width:100%;max-width:420px;background:" + TOKENS.white + ";border-radius:" + TOKENS.radiusCard + ";padding:32px 28px;text-align:center;box-shadow:" + TOKENS.shadow + ";animation:cdlPop .25s ease-out}",
+      ".cdl-modal__overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(38,50,56,.55);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}",
+      ".cdl-modal__card{position:relative;z-index:1;width:100%;max-width:420px;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:" + TOKENS.white + ";border-radius:" + TOKENS.radiusCard + ";padding:32px 28px;text-align:center;box-shadow:" + TOKENS.shadow + ";animation:cdlPop .25s ease-out}",
       "@keyframes cdlPop{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}",
       ".cdl-modal__badge{display:inline-block;margin:0 0 14px;padding:5px 14px;border-radius:" + TOKENS.radiusPill + ";font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}",
       ".cdl-modal__title{margin:0 0 10px;color:" + TOKENS.text + ";font-size:1.3rem;font-weight:700;line-height:1.3}",
@@ -159,13 +159,14 @@
       ".cdl-modal__btn:disabled{opacity:.6;cursor:default}",
       ".cdl-modal__legal{margin:12px 0 0;color:" + TOKENS.textSoft + ";font-size:.72rem;line-height:1.4}",
       ".cdl-modal__legal a{color:inherit}",
-      ".cdl-modal__dismiss{margin-top:14px;background:none;border:none;cursor:pointer;color:" + TOKENS.text + ";opacity:.6;font-family:inherit;font-size:.85rem;text-decoration:underline}",
+      ".cdl-modal__dismiss{margin-top:14px;padding:10px;min-height:44px;box-sizing:border-box;background:none;border:none;cursor:pointer;color:" + TOKENS.text + ";opacity:.6;font-family:inherit;font-size:.85rem;text-decoration:underline}",
       ".cdl-modal__dismiss:hover{opacity:.9}",
       ".cdl-modal__phone{display:flex;gap:8px;margin:0 0 12px}",
       ".cdl-modal__phone .cdl-modal__input{margin:0}",
       ".cdl-modal__phone .cdl-modal__phonenum{flex:1;min-width:0}",
-      ".cdl-modal__dial{flex:0 0 auto;width:44%;box-sizing:border-box;padding:13px 10px;border:1.5px solid " + TOKENS.fieldBorder + ";border-radius:" + TOKENS.radiusField + ";font-family:inherit;font-size:.92rem;color:" + TOKENS.text + ";background:" + TOKENS.white + ";cursor:pointer}",
+      ".cdl-modal__dial{flex:0 0 auto;width:38%;max-width:130px;box-sizing:border-box;padding:13px 8px;border:1.5px solid " + TOKENS.fieldBorder + ";border-radius:" + TOKENS.radiusField + ";font-family:inherit;font-size:1rem;color:" + TOKENS.text + ";background:" + TOKENS.white + ";cursor:pointer}",
       ".cdl-modal__dial:focus{outline:none;border-color:" + TOKENS.green + "}",
+      "@supports not (gap:1px){.cdl-modal__phone .cdl-modal__dial{margin-right:8px}}",
       ".cdl-modal [hidden]{display:none!important}"
     ].join("");
     var s = document.createElement("style");
