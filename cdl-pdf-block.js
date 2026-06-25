@@ -1,7 +1,6 @@
 /* cdl-pdf-block.js - self-mounting PDF lead-magnet block for CDL articles.
- * Put <div data-cdl-pdf></div> anywhere in an article; this script injects the
- * form + styles and runs it. Needs cdl-tools.js + cdl-pdf.js loaded site-wide.
- * Generated from pdf-download-embed.html - rebuild from there. */
+ * Put <div data-cdl-pdf></div> anywhere in an article; injects form + styles, runs it.
+ * Needs cdl-tools.js + cdl-pdf.js site-wide. Generated from pdf-download-embed.html. */
 (function(){"use strict";if(window.__cdlPdfBlockMounted)return;window.__cdlPdfBlockMounted=true;
 function u8(b){var s=atob(b),a=new Uint8Array(s.length);for(var i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return new TextDecoder("utf-8").decode(a);}
 var BLOB="PGRpdiBjbGFzcz0iY2RsLXBkZi1ibG9jayI+CiAgPGRpdiBjbGFzcz0iY2RsLXBkZi1ibG9ja19fYWNjZW50Ij48L2Rpdj4KICA8ZGl2IGNsYXNzPSJjZGwtcGRmLWJsb2NrX19ib2R5Ij4KICAgIDxwIGNsYXNzPSJjZGwtcGRmLWJsb2NrX19leWVicm93IiBkYXRhLWNkbD0iZXllYnJvdyI+RmljaGUtbcOpbW8gb2ZmZXJ0ZTwvcD4KICAgIDxoMyBjbGFzcz0iY2RsLXBkZi1ibG9ja19fdGl0bGUiIGRhdGEtY2RsPSJoZWFkaW5nIj5SZWNldmV6IHZvdHJlIGZpY2hlLW3DqW1vIGVuIFBERjwvaDM+CiAgICA8cCBjbGFzcz0iY2RsLXBkZi1ibG9ja19fdmFsdWUiIGRhdGEtY2RsPSJ2YWx1ZSI+TGVzIDUwMCBtb3RzIGFuZ2xhaXMgbGVzIHBsdXMgZnLDqXF1ZW50cywgY2xhc3PDqXMgcGFyIHRow6htZS48L3A+CgogICAgPGZvcm0gY2xhc3M9ImNkbC1wZGYtYmxvY2tfX2Zvcm0iIGRhdGEtY2RsPSJmb3JtIiBub3ZhbGlkYXRlPgogICAgICA8ZGl2IGNsYXNzPSJjZGwtcGRmLWJsb2NrX19yb3ciPgogICAgICAgIDxsYWJlbCBjbGFzcz0iY2RsLXBkZi1ibG9ja19fZmllbGQiPgogICAgICAgICAgPHNwYW4gY2xhc3M9ImNkbC1wZGYtYmxvY2tfX2xhYmVsIj5QcsOpbm9tPC9zcGFuPgogICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGNsYXNzPSJjZGwtcGRmLWJsb2NrX19pbnB1dCIgZGF0YS1jZGw9ImZpcnN0bmFtZSIgcGxhY2Vob2xkZXI9IlByw6lub20iIGF1dG9jb21wbGV0ZT0iZ2l2ZW4tbmFtZSIgcmVxdWlyZWQgYXJpYS1yZXF1aXJlZD0idHJ1ZSIgLz4KICAgICAgICA8L2xhYmVsPgogICAgICAgIDxsYWJlbCBjbGFzcz0iY2RsLXBkZi1ibG9ja19fZmllbGQiPgogICAgICAgICAgPHNwYW4gY2xhc3M9ImNkbC1wZGYtYmxvY2tfX2xhYmVsIj5Ob20gKGZhY3VsdGF0aWYpPC9zcGFuPgogICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGNsYXNzPSJjZGwtcGRmLWJsb2NrX19pbnB1dCIgZGF0YS1jZGw9Imxhc3RuYW1lIiBwbGFjZWhvbGRlcj0iTm9tIChmYWN1bHRhdGlmKSIgYXV0b2NvbXBsZXRlPSJmYW1pbHktbmFtZSIgLz4KICAgICAgICA8L2xhYmVsPgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBjbGFzcz0iY2RsLXBkZi1ibG9ja19fcm93Ij4KICAgICAgICA8bGFiZWwgY2xhc3M9ImNkbC1wZGYtYmxvY2tfX2ZpZWxkIj4KICAgICAgICAgIDxzcGFuIGNsYXNzPSJjZGwtcGRmLWJsb2NrX19sYWJlbCI+QWRyZXNzZSBlbWFpbDwvc3Bhbj4KICAgICAgICAgIDxpbnB1dCB0eXBlPSJlbWFpbCIgY2xhc3M9ImNkbC1wZGYtYmxvY2tfX2lucHV0IiBkYXRhLWNkbD0iZW1haWwiIHBsYWNlaG9sZGVyPSJBZHJlc3NlIGVtYWlsIiBhdXRvY29tcGxldGU9ImVtYWlsIiByZXF1aXJlZCBhcmlhLXJlcXVpcmVkPSJ0cnVlIiAvPgogICAgICAgIDwvbGFiZWw+CiAgICAgIDwvZGl2PgogICAgICA8cCBjbGFzcz0iY2RsLXBkZi1ibG9ja19fZXJyb3IiIGRhdGEtY2RsPSJlcnJvciIgcm9sZT0iYWxlcnQiIGhpZGRlbj48L3A+CiAgICAgIDxidXR0b24gdHlwZT0ic3VibWl0IiBjbGFzcz0iY2RsLXBkZi1ibG9ja19fYnRuIiBkYXRhLWNkbD0ic3VibWl0Ij5SZWNldm9pciBtYSBmaWNoZSBQREY8L2J1dHRvbj4KICAgIDwvZm9ybT4KCiAgICA8cCBjbGFzcz0iY2RsLXBkZi1ibG9ja19fbGVnYWwiIGRhdGEtY2RsPSJsZWdhbCI+CiAgICAgIEVuIHTDqWzDqWNoYXJnZWFudCBjZXR0ZSBmaWNoZSwgdm91cyBhY2NlcHRleiBkJ8OqdHJlIHJlY29udGFjdMOpKGUpIHBhciB1biBjb25zZWlsbGVyIHDDqWRhZ29naXF1ZQogICAgICBldCBkZSByZWNldm9pciBub3MgY29uc2VpbHMgcGFyIGVtYWlsLiBEw6lzaW5zY3JpcHRpb24gcG9zc2libGUgw6AgdG91dCBtb21lbnQuCiAgICAgIFZvaXIgbm90cmUgPGEgaHJlZj0iL2NndS9wb2xpdGlxdWUtZGUtY29uZmlkZW50aWFsaXRlIiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciI+cG9saXRpcXVlIGRlIGNvbmZpZGVudGlhbGl0w6k8L2E+LgogICAgPC9wPgoKICAgIDxkaXYgY2xhc3M9ImNkbC1wZGYtYmxvY2tfX3N1Y2Nlc3MiIGRhdGEtY2RsPSJzdWNjZXNzIiBoaWRkZW4+CiAgICAgIDxoMyBjbGFzcz0iY2RsLXBkZi1ibG9ja19fc3VjY2Vzcy10aXRsZSIgZGF0YS1jZGw9InN1Y2Nlc3MtdGl0bGUiIHRhYmluZGV4PSItMSI+UGFyZmFpdCAhPC9oMz4KICAgICAgPHAgY2xhc3M9ImNkbC1wZGYtYmxvY2tfX3N1Y2Nlc3MtdGV4dCIgZGF0YS1jZGw9InN1Y2Nlc3MtdGV4dCI+CiAgICAgICAgVm90cmUgZmljaGUgZXN0IHByw6p0ZS4gU2kgbGUgdMOpbMOpY2hhcmdlbWVudCBuZSBkw6ltYXJyZSBwYXMsIHV0aWxpc2V6IGxlIGJvdXRvbiBjaS1kZXNzb3VzLgogICAgICAgIFVuIGNvbnNlaWxsZXIgcMOpZGFnb2dpcXVlIHBldXQgdm91cyBhY2NvbXBhZ25lciBwb3VyIGFsbGVyIHBsdXMgbG9pbi4KICAgICAgPC9wPgogICAgICA8YSBjbGFzcz0iY2RsLXBkZi1ibG9ja19fYnRuIGNkbC1wZGYtYmxvY2tfX2Rvd25sb2FkIiBkYXRhLWNkbD0iZG93bmxvYWQiIGhpZGRlbj5Uw6lsw6ljaGFyZ2VyIG1hIGZpY2hlIFBERjwvYT4KICAgIDwvZGl2PgogIDwvZGl2Pgo8L2Rpdj4KCjxzdHlsZT4KICAuY2RsLXBkZi1ibG9ja3sKICAgIGZvbnQtZmFtaWx5OidNb250c2VycmF0JywtYXBwbGUtc3lzdGVtLEJsaW5rTWFjU3lzdGVtRm9udCwnU2Vnb2UgVUknLFJvYm90byxzYW5zLXNlcmlmOwogICAgbWF4LXdpZHRoOjU2MHB4O21hcmdpbjozMnB4IGF1dG87YmFja2dyb3VuZDojRkZGRkZGO2JvcmRlci1yYWRpdXM6MTZweDsKICAgIGJveC1zaGFkb3c6MCAwIDI0cHggcmdiYSgzOCw1MCw1NiwuMTIpO292ZXJmbG93OmhpZGRlbjtjb2xvcjojMjYzMjM4OwogIH0KICAuY2RsLXBkZi1ibG9ja19fYWNjZW50e2hlaWdodDo2cHg7YmFja2dyb3VuZDojMUFCQzlDO30KICAuY2RsLXBkZi1ibG9ja19fYm9keXtwYWRkaW5nOjI2cHggMjhweCAyNHB4O30KICAuY2RsLXBkZi1ibG9ja19fZXllYnJvd3sKICAgIG1hcmdpbjowIDAgOHB4O2ZvbnQtc2l6ZTouNzJyZW07Zm9udC13ZWlnaHQ6NzAwO2xldHRlci1zcGFjaW5nOi4wOGVtOwogICAgdGV4dC10cmFuc2Zvcm06dXBwZXJjYXNlO2NvbG9yOiMxNTk2N0Q7CiAgfQogIC5jZGwtcGRmLWJsb2NrX190aXRsZXttYXJnaW46MCAwIDhweDtmb250LXNpemU6MS4yNXJlbTtmb250LXdlaWdodDo3MDA7bGluZS1oZWlnaHQ6MS4zO2NvbG9yOiMyNjMyMzg7fQogIC5jZGwtcGRmLWJsb2NrX192YWx1ZXttYXJnaW46MCAwIDE4cHg7Zm9udC1zaXplOi45NXJlbTtsaW5lLWhlaWdodDoxLjU7Y29sb3I6IzZGNkY2Rjt9CiAgLmNkbC1wZGYtYmxvY2tfX3Jvd3tkaXNwbGF5OmZsZXg7Z2FwOjEwcHg7fQogIC5jZGwtcGRmLWJsb2NrX19yb3cgKyAuY2RsLXBkZi1ibG9ja19fcm93e21hcmdpbi10b3A6MTBweDt9CiAgLmNkbC1wZGYtYmxvY2tfX2ZpZWxke2ZsZXg6MTttaW4td2lkdGg6MDtkaXNwbGF5OmZsZXg7ZmxleC1kaXJlY3Rpb246Y29sdW1uO21hcmdpbjowO30KICAvKiBWaXN1YWxseS1oaWRkZW4gYnV0IGF2YWlsYWJsZSB0byBhc3Npc3RpdmUgdGVjaCAobGFiZWwgd3JhcHMgaXRzIGlucHV0KSAqLwogIC5jZGwtcGRmLWJsb2NrX19sYWJlbHsKICAgIHBvc2l0aW9uOmFic29sdXRlO3dpZHRoOjFweDtoZWlnaHQ6MXB4O3BhZGRpbmc6MDttYXJnaW46LTFweDtvdmVyZmxvdzpoaWRkZW47CiAgICBjbGlwOnJlY3QoMCAwIDAgMCk7d2hpdGUtc3BhY2U6bm93cmFwO2JvcmRlcjowOwogIH0KICAuY2RsLXBkZi1ibG9ja19faW5wdXR7CiAgICB3aWR0aDoxMDAlO2JveC1zaXppbmc6Ym9yZGVyLWJveDtwYWRkaW5nOjEycHggMTRweDtib3JkZXI6MS41cHggc29saWQgI0Q3RDdENzsKICAgIGJvcmRlci1yYWRpdXM6OHB4O2ZvbnQtZmFtaWx5OmluaGVyaXQ7Zm9udC1zaXplOjFyZW07Y29sb3I6IzI2MzIzODt0cmFuc2l0aW9uOmJvcmRlci1jb2xvciAuMTVzOwogIH0KICAuY2RsLXBkZi1ibG9ja19faW5wdXQ6Zm9jdXN7b3V0bGluZTpub25lO2JvcmRlci1jb2xvcjojMUFCQzlDO30KICAuY2RsLXBkZi1ibG9ja19faW5wdXRbYXJpYS1pbnZhbGlkPSJ0cnVlIl17Ym9yZGVyLWNvbG9yOiNDNTI4M0Q7fQogIC5jZGwtcGRmLWJsb2NrX19waG9uZXtkaXNwbGF5OmZsZXg7Z2FwOjhweDt3aWR0aDoxMDAlO30KICAuY2RsLXBkZi1ibG9ja19fcGhvbmVudW17ZmxleDoxO21pbi13aWR0aDowO30KICAuY2RsLXBkZi1ibG9ja19fZGlhbHsKICAgIGZsZXg6MCAwIGF1dG87d2lkdGg6NDQlO21heC13aWR0aDoxNjBweDtib3gtc2l6aW5nOmJvcmRlci1ib3g7cGFkZGluZzoxMnB4IDEwcHg7CiAgICBib3JkZXI6MS41cHggc29saWQgI0Q3RDdENztib3JkZXItcmFkaXVzOjhweDtmb250LWZhbWlseTppbmhlcml0O2ZvbnQtc2l6ZToxcmVtOwogICAgY29sb3I6IzI2MzIzODtiYWNrZ3JvdW5kOiNmZmY7dHJhbnNpdGlvbjpib3JkZXItY29sb3IgLjE1czsKICB9CiAgLmNkbC1wZGYtYmxvY2tfX2RpYWw6Zm9jdXN7b3V0bGluZTpub25lO2JvcmRlci1jb2xvcjojMUFCQzlDO30KICAuY2RsLXBkZi1ibG9ja19fZXJyb3J7bWFyZ2luOjEycHggMCAwO2NvbG9yOiNDNTI4M0Q7Zm9udC1zaXplOi44NXJlbTt9CiAgLmNkbC1wZGYtYmxvY2tfX2J0bnsKICAgIGRpc3BsYXk6YmxvY2s7d2lkdGg6MTAwJTttYXJnaW4tdG9wOjE0cHg7Y3Vyc29yOnBvaW50ZXI7cGFkZGluZzoxNHB4IDE4cHg7YmFja2dyb3VuZDojRkZDNDAwOwogICAgY29sb3I6IzI2MzIzODtib3JkZXI6bm9uZTtib3JkZXItcmFkaXVzOjhweDtmb250LWZhbWlseTppbmhlcml0O2ZvbnQtc2l6ZToxcmVtO2ZvbnQtd2VpZ2h0OjcwMDsKICAgIHRleHQtYWxpZ246Y2VudGVyO3RleHQtZGVjb3JhdGlvbjpub25lO2JveC1zaXppbmc6Ym9yZGVyLWJveDt0cmFuc2l0aW9uOmZpbHRlciAuMTVzLG9wYWNpdHkgLjE1czsKICB9CiAgLmNkbC1wZGYtYmxvY2tfX2J0bjpob3ZlcntmaWx0ZXI6YnJpZ2h0bmVzcyguOTYpO30KICAuY2RsLXBkZi1ibG9ja19fYnRuOmRpc2FibGVke29wYWNpdHk6LjY7Y3Vyc29yOmRlZmF1bHQ7fQogIC5jZGwtcGRmLWJsb2NrX19idG46Zm9jdXN7b3V0bGluZToycHggc29saWQgIzFBQkM5QztvdXRsaW5lLW9mZnNldDoycHg7fQogIEBzdXBwb3J0cyBzZWxlY3Rvcig6Zm9jdXMtdmlzaWJsZSl7CiAgICAuY2RsLXBkZi1ibG9ja19fYnRuOmZvY3Vze291dGxpbmU6bm9uZTt9CiAgICAuY2RsLXBkZi1ibG9ja19fYnRuOmZvY3VzLXZpc2libGV7b3V0bGluZToycHggc29saWQgIzFBQkM5QztvdXRsaW5lLW9mZnNldDoycHg7fQogIH0KICAuY2RsLXBkZi1ibG9ja19fbGVnYWx7bWFyZ2luOjE0cHggMCAwO2NvbG9yOiM2RjZGNkY7Zm9udC1zaXplOi43MnJlbTtsaW5lLWhlaWdodDoxLjQ1O30KICAuY2RsLXBkZi1ibG9ja19fbGVnYWwgYXtjb2xvcjojMTU5NjdEO30KICAuY2RsLXBkZi1ibG9ja19fc3VjY2Vzc3t0ZXh0LWFsaWduOmNlbnRlcjtwYWRkaW5nOjhweCAwIDRweDt9CiAgLmNkbC1wZGYtYmxvY2tfX3N1Y2Nlc3MtdGl0bGV7bWFyZ2luOjAgMCA4cHg7Zm9udC1zaXplOjEuMTVyZW07Zm9udC13ZWlnaHQ6NzAwO2NvbG9yOiMxQUJDOUM7b3V0bGluZTpub25lO30KICAuY2RsLXBkZi1ibG9ja19fc3VjY2Vzcy10ZXh0e21hcmdpbjowO2ZvbnQtc2l6ZTouOTVyZW07bGluZS1oZWlnaHQ6MS41O2NvbG9yOiMyNjMyMzg7fQogIC5jZGwtcGRmLWJsb2NrX19kb3dubG9hZHttYXgtd2lkdGg6MjgwcHg7bWFyZ2luLWxlZnQ6YXV0bzttYXJnaW4tcmlnaHQ6YXV0bzt9CiAgLmNkbC1wZGYtYmxvY2sgW2hpZGRlbl17ZGlzcGxheTpub25lIWltcG9ydGFudDt9CiAgQG1lZGlhKG1heC13aWR0aDo1MjBweCl7LmNkbC1wZGYtYmxvY2tfX3Jvd3tmbGV4LWRpcmVjdGlvbjpjb2x1bW47Z2FwOjEwcHg7fX0KPC9zdHlsZT4K";
@@ -77,19 +76,27 @@ mountAll();if(document.readyState==="loading")document.addEventListener("DOMCont
    * each <table> becomes a section, titled by the nearest heading above it;
    * rows = the table cells. Falls back to CONFIG.pdf.sections if no tables found.
    * ========================================================= */
+  // Scope everything to the blog article body (not nav / footer / related-article blocks).
+  function getArticleContainer() {
+    return document.querySelector(".blog-post-content_content-left") ||
+           document.querySelector('[class*="blog-post-content"]') ||
+           document.querySelector("article, main") || document.body;
+  }
+  function cleanText(el) { return (el.textContent || "").replace(/\s+/g, " ").trim(); }
+  // Skip our own download block so it never feeds itself into the PDF.
+  function isInOurBlock(el) { return !!(el.closest && el.closest("[data-cdl-pdf], .cdl-pdf-block")); }
+
+  // VOCAB mode: every vocab table -> a section, titled by the heading above it.
   function extractFicheFromArticle() {
-    // Scope to the blog article body (not nav / footer / related-article blocks).
-    var container = document.querySelector(".blog-post-content_content-left") ||
-                    document.querySelector('[class*="blog-post-content"]') ||
-                    document.querySelector("article, main") || document.body;
+    var container = getArticleContainer();
     // The vocab tables carry class "vocab-table" (inside Webflow embeds); fall back to any table.
     var tableSel = container.querySelector("table.vocab-table") ? "table.vocab-table" : "table";
-    // Walk headings + tables in document order so each table inherits the heading above it.
     var nodes = container.querySelectorAll("h1,h2,h3,h4," + tableSel);
     var sections = [], lastHeading = "";
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i];
-      if (/^H[1-6]$/.test(el.tagName)) { lastHeading = (el.textContent || "").replace(/\s+/g, " ").trim(); continue; }
+      if (isInOurBlock(el)) continue;
+      if (/^H[1-6]$/.test(el.tagName)) { lastHeading = cleanText(el); continue; }
       var rows = extractTableRows(el);
       if (rows.length) {
         sections.push({ heading: lastHeading || ("Vocabulaire " + (sections.length + 1)), type: "table",
@@ -114,6 +121,63 @@ mountAll();if(document.readyState==="loading")document.addEventListener("DOMCont
       rows.push(vals);
     }
     return rows;
+  }
+
+  // PROSE mode: walk the article body in order -> headings + paragraphs + lists + tables.
+  function extractProseSections(container) {
+    var tableSel = container.querySelector("table.vocab-table") ? "table.vocab-table" : "table";
+    var nodes = container.querySelectorAll("h2,h3,h4,p,ul,ol," + tableSel);
+    var sections = [], curHeading = "", headingPending = false, buf = [];
+    function flushProse() {
+      if (!buf.length) return;
+      sections.push({ type: "text", heading: headingPending ? curHeading : "", body: buf.join("\n\n") });
+      headingPending = false; buf = [];
+    }
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i]; if (isInOurBlock(el)) continue;
+      var tag = el.tagName.toUpperCase();
+      if (tag === "H2" || tag === "H3" || tag === "H4") {
+        flushProse(); curHeading = cleanText(el); headingPending = !!curHeading;
+      } else if (tag === "P") {
+        var t = cleanText(el); if (t) buf.push(t);
+      } else if (tag === "UL" || tag === "OL") {
+        var lis = el.querySelectorAll("li"), bl = [];
+        for (var b = 0; b < lis.length; b++) { var lt = cleanText(lis[b]); if (lt) bl.push("- " + lt); }
+        if (bl.length) buf.push(bl.join("\n"));
+      } else if (tag === "TABLE") {
+        flushProse();
+        var rows = extractTableRows(el);
+        if (rows.length) {
+          sections.push({ type: "table", heading: headingPending ? curHeading : "",
+                          columns: ["Anglais", "Français"], rows: rows });
+          headingPending = false;
+        }
+      }
+    }
+    flushProse();
+    return sections;
+  }
+
+  // Decide which mode fits THIS article: tables dominate -> vocab fiche; otherwise -> prose summary.
+  function chooseFiche() {
+    var container = getArticleContainer();
+    var tableSections = extractFicheFromArticle();
+    var tableChars = 0;
+    for (var i = 0; i < tableSections.length; i++) {
+      var rows = tableSections[i].rows || [];
+      for (var r = 0; r < rows.length; r++) tableChars += rows[r].join(" ").length;
+    }
+    var proseChars = 0, pn = container.querySelectorAll("p, li");
+    for (var j = 0; j < pn.length; j++) {
+      if (isInOurBlock(pn[j])) continue;
+      proseChars += (pn[j].textContent || "").trim().length;
+    }
+    // Tables dominate the page -> it's a vocabulary article; otherwise it's a guide/prose article.
+    if (tableSections.length && tableChars >= proseChars) return { mode: "vocab", sections: tableSections };
+    var prose = extractProseSections(container);
+    if (prose.length) return { mode: "prose", sections: prose };
+    if (tableSections.length) return { mode: "vocab", sections: tableSections };
+    return { mode: "vocab", sections: null };
   }
   function isIOS() {
     return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -288,16 +352,20 @@ mountAll();if(document.readyState==="loading")document.addEventListener("DOMCont
         track("cta_submitted", { tool: ARTICLE_SOURCE, category: "lead", label: "pdf_fiche" });
         // 4. generate the PDF as a Blob; lead already captured if this fails.
         if (window.CDLPdf && CDLPdf.generate) {
-          // Auto-extract the article's vocab; fall back to the manual CONFIG.pdf.sections if none found.
-          var autoSections = extractFicheFromArticle();
+          // Auto-detect the article type and extract accordingly (vocab tables vs prose).
+          var chosen = chooseFiche();
           var pdfConfig;
-          if (autoSections && autoSections.length) {
+          if (chosen.sections && chosen.sections.length) {
             // AUTO path: derive title + filename from THIS article - never the baked 500-mots values.
             var h1 = document.querySelector("h1");
             var artTitle = (h1 && h1.textContent.trim()) || "Fiche de vocabulaire";
+            var sub = chosen.mode === "prose"
+              ? "L'essentiel de cet article, à garder sous la main."
+              : "Votre fiche-mémo de vocabulaire, classée par thème.";
             pdfConfig = Object.assign({}, CONFIG.pdf, {
-              sections: autoSections,
+              sections: chosen.sections,
               title: artTitle,
+              subtitle: sub,
               filename: "fiche-" + ARTICLE_SOURCE.replace(/^blog-/, "") + ".pdf",
               returnBlob: true, autoSave: false
             });

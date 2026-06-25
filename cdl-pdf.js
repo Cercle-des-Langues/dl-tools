@@ -342,7 +342,16 @@
     font.bold(); doc.setFontSize(13);
     var hLines = wrapText(doc, section.heading || "", CONTENT_W);
     font.body(); doc.setFontSize(10.5);
-    var bLines = wrapText(doc, section.body || "", CONTENT_W);
+    // Honor intentional line breaks (paragraphs / bullets): split on \n first, then wrap
+    // each segment. An empty segment renders as a blank line (paragraph gap). A body with
+    // no \n is a single segment -> identical to the previous behaviour.
+    var bSegs = String(section.body || "").split("\n");
+    var bLines = [];
+    for (var bi = 0; bi < bSegs.length; bi++) {
+      if (bSegs[bi] === "") { bLines.push(""); continue; }
+      var bw = wrapText(doc, bSegs[bi], CONTENT_W);
+      for (var bj = 0; bj < bw.length; bj++) bLines.push(bw[bj]);
+    }
 
     // Orphan guard: never strand a heading at the foot of a page - require
     // room for the heading plus a few body lines before drawing it.
