@@ -15,7 +15,7 @@ mount.innerHTML=u8("PHN0eWxlPgogICAgLm1lbW9yeS1hcHAgKiwKICAgIC5tZW1vcnktYXBwICo6
             { en: 'feedback', fr: 'retour' },
             { en: 'contract', fr: 'contrat' }
         ];
-        var LIVES_START = 5;
+        var LIVES_START = 10;
 
         // Build the 16 cards (one EN + one FR per pair), then shuffle.
         var cards = [];
@@ -188,7 +188,7 @@ mount.innerHTML=u8("PHN0eWxlPgogICAgLm1lbW9yeS1hcHAgKiwKICAgIC5tZW1vcnktYXBwICo6
             ovActions.hidden = true; ovActions.innerHTML = '';
             ovBadge.hidden = false; ovBadge.textContent = 'Mémoire';
             ovScore.hidden = false; ovScore.textContent = matchCount + ' / ' + PAIRS.length;
-            ovMsg.textContent = lives >= 4 ? 'Votre mémoire du vocabulaire professionnel est excellente.' : lives >= 2 ? 'Votre mémoire du vocabulaire professionnel progresse.' : 'Votre mémoire du vocabulaire professionnel a besoin d\'entraînement.';
+            ovMsg.textContent = lives >= 8 ? 'Votre mémoire du vocabulaire professionnel est excellente.' : lives >= 4 ? 'Votre mémoire du vocabulaire professionnel progresse.' : 'Votre mémoire du vocabulaire professionnel a besoin d\'entraînement.';
             setTimeout(function () { hideOverlay(); openWinForm(); }, 2000);
         }
 
@@ -231,7 +231,7 @@ mount.innerHTML=u8("PHN0eWxlPgogICAgLm1lbW9yeS1hcHAgKiwKICAgIC5tZW1vcnktYXBwICo6
             matchCount = 0; matched = {}; flipped = []; ended = false; streak = 0;
             shuffle(cards);              // fresh layout each round
             renderGrid(); renderLives(); renderScore();
-            preview(r === 1 ? 3000 : 1500);
+            preview(r === 1 ? 7000 : 3000);
         }
 
         // ── Register the tool on the shared module (Mode A) ──

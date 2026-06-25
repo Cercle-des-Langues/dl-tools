@@ -125,7 +125,25 @@ mount.innerHTML=u8("PHN0eWxlPgogICAgLmRpY3RlZS1hcHAgKiwKICAgIC5kaWN0ZWUtYXBwICo6
         var gradeMsg = el('dictee-grade-msg');
 
         function normalize(s) {
-            return s.toLowerCase().replace(/[^\w\s]|_/g, '').replace(/\s+/g, ' ').trim();
+            // Accept British AND American spellings (organised/organized, colour/color, centre/center...)
+            // by canonicalising UK -> US. Applied to BOTH the typed answer and the expected text,
+            // so a valid variant is never marked wrong.
+            var UK_US = { colour:'color', colours:'colors', behaviour:'behavior', behaviours:'behaviors',
+                favour:'favor', favours:'favors', favourite:'favorite', favourites:'favorites',
+                neighbour:'neighbor', neighbours:'neighbors', labour:'labor', honour:'honor',
+                centre:'center', centres:'centers', theatre:'theater', metre:'meter', litre:'liter',
+                programme:'program', programmes:'programs', catalogue:'catalog', dialogue:'dialog',
+                licence:'license', defence:'defense', offence:'offense', practise:'practice',
+                grey:'gray', cancelled:'canceled', travelling:'traveling', traveller:'traveler', labelled:'labeled' };
+            function toUS(w) {
+                if (UK_US.hasOwnProperty(w)) return UK_US[w];
+                return w.replace(/isations$/, 'izations').replace(/isation$/, 'ization')
+                        .replace(/ising$/, 'izing').replace(/ised$/, 'ized')
+                        .replace(/isers$/, 'izers').replace(/iser$/, 'izer')
+                        .replace(/ises$/, 'izes').replace(/ise$/, 'ize');
+            }
+            return s.toLowerCase().replace(/[^\w\s]|_/g, '').replace(/\s+/g, ' ').trim()
+                    .split(' ').map(toUS).join(' ');
         }
         function phrase() { return PHRASES[currentLevel][phraseIndex]; }
 
