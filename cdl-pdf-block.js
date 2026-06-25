@@ -23,7 +23,7 @@ mountAll();if(document.readyState==="loading")document.addEventListener("DOMCont
     // copy AFFICHÉE dans le bloc
     blockEyebrow: "Fiche-mémo offerte",
     blockHeading: "Recevez votre fiche-mémo en PDF",
-    blockValue:   "Les 500 mots anglais les plus fréquents, classés par thème - à garder sous la main.",
+    blockValue:   "Tout le vocabulaire de cet article réuni dans une fiche PDF, classée par thème - à garder sous la main.",
 
     // contenu du PDF généré
     pdf: {
@@ -290,12 +290,22 @@ mountAll();if(document.readyState==="loading")document.addEventListener("DOMCont
         if (window.CDLPdf && CDLPdf.generate) {
           // Auto-extract the article's vocab; fall back to the manual CONFIG.pdf.sections if none found.
           var autoSections = extractFicheFromArticle();
-          var h1 = document.querySelector("h1");
-          var pdfConfig = Object.assign({}, CONFIG.pdf, {
-            sections: (autoSections && autoSections.length) ? autoSections : CONFIG.pdf.sections,
-            title: CONFIG.pdf.title || (h1 ? h1.textContent.trim() : "Fiche de vocabulaire"),
-            returnBlob: true, autoSave: false
-          });
+          var pdfConfig;
+          if (autoSections && autoSections.length) {
+            // AUTO path: derive title + filename from THIS article - never the baked 500-mots values.
+            var h1 = document.querySelector("h1");
+            var artTitle = (h1 && h1.textContent.trim()) || "Fiche de vocabulaire";
+            pdfConfig = Object.assign({}, CONFIG.pdf, {
+              sections: autoSections,
+              title: artTitle,
+              filename: "fiche-" + ARTICLE_SOURCE.replace(/^blog-/, "") + ".pdf",
+              returnBlob: true, autoSave: false
+            });
+            delete pdfConfig.level; // no CEFR badge - we cannot know each article's level
+          } else {
+            // FALLBACK: the hand-built CONFIG.pdf fiche keeps its own title/filename/level.
+            pdfConfig = Object.assign({}, CONFIG.pdf, { returnBlob: true, autoSave: false });
+          }
           return CDLPdf.generate(pdfConfig)
             .then(function (res) { return res || false; })
             .catch(function (err) { console.warn("[pdf-embed] PDF generation failed:", err && err.message); return false; });
