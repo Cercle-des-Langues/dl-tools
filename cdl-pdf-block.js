@@ -18,7 +18,7 @@ mountAll();if(document.readyState==="loading")document.addEventListener("DOMCont
   var CONFIG = {
     articleSource: "ARTICLE_SOURCE_ID",        // -> hidden field outil_source (ex: "blog-500-mots")
     portalId: "6034125",
-    formId:   "71b010ce-dc05-47ce-88c4-130674855dae",
+    formId:   "356068dd-9721-4f78-af7c-9df1f09d05ca",  // dedicated PDF-lead form (separate from the games' form)
 
     // copy AFFICHÉE dans le bloc
     blockEyebrow: "Fiche-mémo offerte",
