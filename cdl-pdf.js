@@ -539,6 +539,7 @@
         var sections = config.sections || [];
         for (var i = 0; i < sections.length; i++) {
           var s = sections[i] || {};
+          if (s.newPageBefore && y > CONT_TOP_Y) y = newPage(doc);  // start on a fresh page (e.g. the corrigé)
           if (s.type === "table") y = renderTableSection(doc, font, y, s);
           else if (s.type === "text") y = renderTextSection(doc, font, y, s);
           else { console.warn("[CDLPdf] unknown section type, rendering as text:", s.type); y = renderTextSection(doc, font, y, s); }

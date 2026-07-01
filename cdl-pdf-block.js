@@ -179,6 +179,39 @@ mountAll();if(document.readyState==="loading")document.addEventListener("DOMCont
     if (tableSections.length) return { mode: "vocab", sections: tableSections };
     return { mode: "vocab", sections: null };
   }
+
+  // Build a self-test (recall table + answer key) from the extracted vocab pairs.
+  // Returns extra sections to append at the end of a VOCAB fiche.
+  function buildSelfTest(sections) {
+    var pairs = [];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].type !== "table") continue;
+      var rows = sections[i].rows || [];
+      for (var r = 0; r < rows.length; r++) {
+        var en = (rows[r][0] || "").trim(), fr = (rows[r][1] || "").trim();
+        if (en && fr) pairs.push([en, fr]);
+      }
+    }
+    if (pairs.length < 20) return [];                // only real vocab sets get a self-test (skip prose guides)
+    var MAX = 20, sel;
+    if (pairs.length <= MAX) { sel = pairs; }
+    else {                                            // spread the sample across all themes
+      sel = []; var step = pairs.length / MAX;
+      for (var k = 0; k < MAX; k++) sel.push(pairs[Math.floor(k * step)]);
+    }
+    return [
+      { type: "text", heading: "Testez-vous", newPageBefore: true,
+        body: "Cachez la colonne de droite et écrivez la traduction de chaque mot. "
+            + "Vérifiez ensuite avec le corrigé, à la page suivante." },
+      { type: "table", heading: "", columns: ["Mot anglais", "Votre traduction"],
+        rows: sel.map(function (p) { return [p[0], ""]; }) },
+      { type: "table", heading: "Corrigé", newPageBefore: true,
+        columns: ["Mot anglais", "Traduction"], rows: sel.map(function (p) { return [p[0], p[1]]; }) },
+      { type: "text", heading: "",
+        body: "Comptez vos bonnes réponses sur " + sel.length + ". Pour les mots encore hésitants, "
+            + "un conseiller pédagogique peut construire avec vous un plan adapté à votre niveau." }
+    ];
+  }
   function isIOS() {
     return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -362,8 +395,13 @@ mountAll();if(document.readyState==="loading")document.addEventListener("DOMCont
             var sub = chosen.mode === "prose"
               ? "L'essentiel de cet article, à garder sous la main."
               : "Votre fiche-mémo de vocabulaire, classée par thème.";
+            // Append a self-test (recall table + corrigé) whenever the article has a real
+            // vocab set - in either mode, since prose fiches also carry the vocabulary tables.
+            var finalSections = chosen.sections;
+            var testSections = buildSelfTest(chosen.sections);
+            if (testSections.length) finalSections = chosen.sections.concat(testSections);
             pdfConfig = Object.assign({}, CONFIG.pdf, {
-              sections: chosen.sections,
+              sections: finalSections,
               title: artTitle,
               subtitle: sub,
               filename: "fiche-" + ARTICLE_SOURCE.replace(/^blog-/, "") + ".pdf",
